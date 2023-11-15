@@ -39,6 +39,26 @@ public class DatabaseService {
         }
     }
 
+     public User authenticateUser(String username, String password) {
+        System.out.println("logId = " + username);
+        try {
+            String query = "SELECT * FROM to_do_app.Users WHERE Username = ? and Password =?";
+
+            return jdbcTemplate.queryForObject(query, (rs, rowNum) -> {
+                int userID = (int)rs.getInt("UserID");
+                String user_name = rs.getString("Username");
+                String user_password = rs.getString("Password");
+                String email = rs.getString("Email");
+              //   public User( String username,String email, String password) {
+        
+                return new User(userID, user_name,email, user_password);
+            }, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public Producto getProducto(int id) {
         System.out.println("logId = " + id);
         try {

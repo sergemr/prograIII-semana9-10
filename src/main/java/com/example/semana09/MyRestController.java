@@ -45,6 +45,15 @@ public class MyRestController {
         databaseService.insertProducto(producto) ;
     }
 
+    @PostMapping("/login")
+    public User loginUser(String username, String password) {
+
+    User  tmpUser =  databaseService.authenticateUser(username,password) ;
+    tmpUser.setJTW();
+    return tmpUser;
+    }
+
+
     @DeleteMapping("/byid")
     public void delete(int id) {
 
