@@ -1,8 +1,10 @@
 package com.example.semana09;
 
-  import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,6 +16,7 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 class DatabaseServiceTest {
 
@@ -47,29 +50,24 @@ class DatabaseServiceTest {
         // Asserting that the actual result matches the expected result
         assertEquals(expectedProducts, actualProducts);
     }
-
-
     @Test
-    void testProducts() {
-        // Mocking the result from the database
-        List<Map<String, Object>> mockResult = new ArrayList<>();
-        mockResult.add(Map.of("id_producto", 1, "nombre_producto", "Product 1", "descripcion_producto", "Description 1"));
+    void testGetProducto() {
+    // Mocking the behavior of jdbcTemplate.queryForObject()
+    when(jdbcTemplate.queryForObject(
+            eq("SELECT * FROM to_do_app.Productos WHERE id_producto = ?"),
+            any(RowMapper.class), // Use any() for RowMapper
+            eq(1)
+    )).thenReturn(new Producto(1, "Product 1", "Description 1"));
 
-        // Mocking the behavior of jdbcTemplate.queryForList()
-        when(jdbcTemplate.queryForList("SELECT * FROM to_do_app.Productos where id_producto=1")).thenReturn(mockResult);
+    // Calling the actual method to be tested
+    Producto actualProduct = databaseService.getProducto(1);
 
-        // Calling the actual method to be tested
-        Producto actualProducts = databaseService.getProducto(1);
-                System.out.println("actualProducts");
-System.out.println(actualProducts);
-        // Creating the expected result
-        List<Producto> expectedProducts = new ArrayList<>();
-        expectedProducts.add(new Producto(1, "Product 1", "Description 1"));
-        // Asserting that the actual result matches the expected result
-        assertEquals(expectedProducts, actualProducts);
+    // Creating the expected result
+    Producto expectedProduct = new Producto(1, "Product 1", "Description 1");
+
+    // Asserting that the actual result matches the expected result
+    assertEquals(expectedProduct, actualProduct);
     }
-
-  
    
     @Test
     void testInsertProducto() {
