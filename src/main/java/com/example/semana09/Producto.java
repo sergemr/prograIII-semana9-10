@@ -1,5 +1,7 @@
 package com.example.semana09;
 
+import java.util.Objects;
+
 public class Producto {
     // Atributos
     private int id_producto;
@@ -40,5 +42,22 @@ public class Producto {
     }
 
     // toString
-    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Producto producto = (Producto) obj;
+        return id_producto == producto.id_producto &&
+               Objects.equals(nombre_producto, producto.nombre_producto) &&
+               Objects.equals(descripcion_producto, producto.descripcion_producto);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id_producto, nombre_producto, descripcion_producto);
+    }
 }
